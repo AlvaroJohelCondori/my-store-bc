@@ -1,19 +1,11 @@
 const express = require('express');
-const { faker } = require('@faker-js/faker');
+const ProductsService = require('./../services/product.service');
 
 const router = express.Router();
+const service = new ProductsService();
 
-router.get('/', (request, response) => {
-  const products = [];
-  const { size } = request.query;
-  const limit = size || 10;
-  for (let i = 0; i < limit; i++) {
-    products.push({
-      name: faker.commerce.productName(),
-      price: parseInt(faker.commerce.price(), 10),
-      image: faker.image.imageUrl(),
-    });
-  }
+router.get('/', async (request, response) => {
+  const products = await service.find();
   response.json(products);
 });
 
@@ -21,46 +13,35 @@ router.get('/filter', (request, response) => {
   response.send('Yo soy un filter');
 });
 
-router.get('/:id', (request, response) => {
+router.get('/:id', async (request, response) => {
   const { id } = request.params;
-  if (id === '999') {
+  const product = await service.findOne(id);
+  response.json(product);
+});
+
+router.post('/', async (request, response) => {
+  const body = request.body;
+  const newProduct = await service.create(body);
+  response.status(201).json(newProduct);
+});
+
+router.patch('/:id', async (request, response) => {
+  try {
+    const { id } = request.params;
+    const body = request.body;
+    const product = await service.update(id, body);
+    response.json(product);
+  } catch (error) {
     response.status(404).json({
-      message: 'Not Found',
-    });
-  } else {
-    response.status(200).json({
-      id,
-      name: 'Product 2',
-      price: 2000,
+      message: error.message,
     });
   }
 });
 
-router.post('/', (request, response) => {
-  const body = request.body;
-  response.status(201).json({
-    message: 'Created',
-    data: body,
-  });
-});
-
-router.patch('/:id', (request, response) => {
+router.delete('/:id', async (request, response) => {
   const { id } = request.params;
-  const body = request.body;
-  response.json({
-    message: 'Update',
-    data: body,
-    id,
-  });
-});
-
-router.delete('/:id', (request, response) => {
-  const { id } = request.params;
-  const body = request.body;
-  response.json({
-    message: 'Deleted',
-    id,
-  });
+  const product = await service.delete(id);
+  response.json(product);
 });
 
 module.exports = router;
