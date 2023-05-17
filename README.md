@@ -1,5 +1,5 @@
 # Mi Proyecto BananitasDev
 
-Proyecto My-Store-BackEnd.
+Proyecto My-Store-BackEnd JS.
 
 ## Tabla de contenidos
