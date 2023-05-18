@@ -12,3 +12,18 @@ module.exports = {
     await queryInterface.dropTable(USER_TABLE);
   },
 };
+
+/*'use strict';
+// ejemplo para agregar una columna en la tabala users
+const { UserSchema, USER_TABLE } = require('./../models/user.model');
+
+/** @type {import('sequelize-cli').Migration} 
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.addColumn(USER_TABLE, 'role', UserSchema.role);
+  },
+
+  async down(queryInterface, Sequelize) {
+    await queryInterface.removeColumn(USER_TABLE, 'role');
+  },
+};*/
